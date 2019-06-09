@@ -33,12 +33,12 @@ def composite_phto(add_img, back_img):
 サンプリング：area
 Lanczos法補間：lanczos
 """
-def resize_photo(resize_img, width, height, interpolation):
+def resize_photo(in_img, width, height, interpolation):
     # 処理開始時間
     start_time = time.time()
 
     # 画像の読込
-    resize_img =cv2.imread(resize_img)
+    resize_img =cv2.imread(in_img)
 
     # 縮小方法による場合分け
     if interpolation == 'nearest':
@@ -85,7 +85,26 @@ def concat_photo(in_img, count):
     # 画像の保存
     cv2.imwrite('concat.jpg', concat_img)
 
+"""
+関数：文字の書き込み
+元の画像：in_img
+書き込む文字列：text
+※opencvでは日本語を書込むフォントがない。
+"""
+def putText_photo(in_img, text):
 
+    # 処理開始時間
+    start_time = time.time()
+    # 画像の読み込み
+    in_img = cv2.imread(in_img)
+    putText_img = cv2.putText(in_img, text, (0, 50), cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 5,cv2.LINE_AA)
+
+    # 経過時間
+    putText_time = time.time() - start_time
+    print("putText_time:{0}".format(putText_time) + "[sec]")
+
+    # 画像の保存
+    cv2.imwrite('putText.jpg', putText_img)
 
 
 # メイン処理
@@ -93,14 +112,19 @@ if __name__== '__main__':
     # 画像の定義
     add_img = 'add.jpg'
     back_img = 'back.jpg'
-    resize_img = 'resize.jpg'
+    resize_img = 'tramp.jpg'
     lena_img = 'lena.jpg'
+    over_img = 'marry.jpg'
+
 
     # 画像の合成　呼出
     composite_phto(add_img=add_img, back_img=back_img)
 
     # 画像のリサイズ
-    resize_photo(resize_img=resize_img, width=200, height=200, interpolation='linear')
+    resize_photo(in_img=resize_img, width=200, height=200, interpolation='linear')
 
     # 画像の連結　１０回
     concat_photo(in_img=lena_img, count=10)
+
+    # 画像に書込み
+    putText_photo(in_img=over_img, text='Really??')
